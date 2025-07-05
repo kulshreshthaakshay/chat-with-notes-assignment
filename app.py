@@ -4,18 +4,17 @@ import os
 import pypdf
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # For session management
+app.secret_key = os.urandom(24)
 
 def generate_response(prompt, conversation_history, file_content):
     formatted_history = "\n".join(conversation_history)
-    
     full_prompt = f"File content:\n{file_content}\n\nConversation history:\n{formatted_history}\n\nHuman: {prompt}\nAI:"
     url = 'http://localhost:11434/v1/completions'
     headers = {'Content-Type': 'application/json'}
     data = {
         'prompt': full_prompt,
         'model': 'llama3.2',
-        'max_tokens': 5000  # Adjust as needed
+        'max_tokens': 5000
     }
     try:
         response = requests.post(url, headers=headers, json=data)
@@ -50,19 +49,14 @@ def upload():
                     content += page.extract_text()
             else:
                 content = file.read().decode('utf-8')
-            
             action = request.form.get('action', 'upload')
-            
             if action == 'clear':
                 session['conversation_history'] = []
             elif action == 'keep':
-                # Keep the existing conversation history
                 if 'conversation_history' in session and session['conversation_history']:
                     session['conversation_history'].append("System: New file uploaded. Previous context may or may not apply.")
             else:
-                # Default action (upload without existing chat)
                 session['conversation_history'] = []
-            
             session['file_content'] = content
             return jsonify({
                 'content': content,
@@ -79,19 +73,10 @@ def chat():
     user_input = data['message']
     conversation_history = session.get('conversation_history', [])
     file_content = session.get('file_content', '')
-
-    # Add user input to conversation history
     conversation_history.append(f"Human: {user_input}")
-
-    # Generate AI response
     ai_response = generate_response(user_input, conversation_history, file_content)
-
-    # Add AI response to conversation history
     conversation_history.append(f"AI: {ai_response}")
-
-    # Store updated history in session
     session['conversation_history'] = conversation_history
-
     return jsonify({
         'response': ai_response,
         'full_history': conversation_history

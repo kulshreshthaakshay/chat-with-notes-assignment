@@ -14,31 +14,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const allowedFileTypes = ['.txt', '.md', '.py', '.js', '.html', '.css', '.json', '.pdf'];
 
-    // Create loading overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'loading-overlay';
     loadingOverlay.innerHTML = '<div class="loader"></div>';
     document.body.appendChild(loadingOverlay);
 
-    // Function to show/hide loading overlay
     function setLoading(isLoading) {
         loadingOverlay.style.display = isLoading ? 'flex' : 'none';
     }
 
-    // Function to show/hide spinner
     function setSpinner(isLoading) {
         spinner.style.display = isLoading ? 'block' : 'none';
     }
 
-    // Load chat history from local storage
     loadChatHistory();
-
-    // Load file content from local storage
     loadFileContent();
-
     fileInput.addEventListener('change', handleFileSelect);
 
-    // Drag and drop functionality
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropZone.classList.add('dragover');
@@ -64,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (allowedFileTypes.includes(fileExtension)) {
                 uploadButton.textContent = 'Upload ' + file.name;
                 uploadButton.disabled = false;
-                fileInput.files = e.target.files;  // Update the file input
+                fileInput.files = e.target.files;
             } else {
                 uploadButton.textContent = 'Invalid file type';
                 uploadButton.disabled = true;
@@ -79,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(uploadForm);
-
-        // Check if there's existing chat history
         if (chatHistory.innerHTML.trim() !== '') {
             const userChoice = await showUploadConfirmation();
             if (userChoice === 'cancel') {
@@ -90,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             formData.append('action', 'upload');
         }
-
         try {
             setLoading(true);
             const response = await fetch('/upload', {
@@ -103,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileContent.textContent = '';
             } else {
                 fileContent.textContent = data.content;
-                localStorage.setItem('fileContent', data.content); // Store file content in localStorage
+                localStorage.setItem('fileContent', data.content);
                 if (data.chatHistory) {
                     updateChatHistory(data.chatHistory);
                 }
@@ -121,10 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const message = userInput.value.trim();
         if (!message) return;
-
         appendMessage('You', message);
         userInput.value = '';
-
         try {
             setSpinner(true);
             const response = await fetch('/chat', {
@@ -161,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             document.body.appendChild(confirmationDialog);
-
             document.getElementById('clearChatBtn').onclick = () => {
                 document.body.removeChild(confirmationDialog);
                 resolve('clear');
@@ -186,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateChatHistory(fullHistory) {
-        chatHistory.innerHTML = ''; // Clear existing chat history
+        chatHistory.innerHTML = '';
         fullHistory.forEach(message => {
             if (message.startsWith('Human: ')) {
                 appendMessage('You', message.substring(7));
@@ -258,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
             chatHistory.innerHTML = '';
             fileContent.textContent = '';
             localStorage.clear();
-            // Force a hard reload of the page to clear any cached data
             window.location.reload(true);
         } catch (error) {
             console.error('Error clearing all data:', error);
