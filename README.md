@@ -16,8 +16,8 @@ Chat-with-Notes is a simple web application built with Flask that allows users t
 - Python 3.x
 - pip (Python package installer)
 - Git
-- Ollama with Llama 3.1 (8B) model running locally
-
+- Ollama with Llama 3.2
+  
 ## Installation
 
 1. **Clone the Repository**
@@ -40,14 +40,14 @@ Chat-with-Notes is a simple web application built with Flask that allows users t
    pip install -r requirements.txt
    ```
 
-4. **Set Up and Run Ollama Llama 3.1 Model**
+4. **Set Up and Run Ollama Llama 3.2 Model**
 
-   Make sure you have the Ollama Llama 3.1 model running locally. Follow the instructions on [Ollama's website](https://ollama.ai/) to set it up.
+   Make sure you have the Ollama Llama 3.2 model running locally. Follow the instructions on [Ollama's website](https://ollama.ai/) to set it up.
 
-   Start the Ollama Llama 3.1 model:
+   Start the Ollama Llama 3.2 model:
 
    ```
-   ollama run llama3.1
+   ollama run llama3.2
    ```
 
 ## Running the Application
@@ -93,7 +93,7 @@ Chat-with-Notes is a simple web application built with Flask that allows users t
 
 ## Troubleshooting
 
-- If you encounter issues with the AI responses, ensure that the Ollama Llama 3.1 model is running correctly on your local machine.
+- If you encounter issues with the AI responses, ensure that the Ollama Llama 3.2 model is running correctly on your local machine.
 - Check the console for any error messages if the application isn't behaving as expected.
 
 ## Contributing
